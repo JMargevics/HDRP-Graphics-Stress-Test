@@ -704,7 +704,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TheBall: {fileID: 939931785}
-  BallCounts: 50
+  BallCounts: 500
   AreaLimit: 4
 --- !u!1 &1174510479
 GameObject:
