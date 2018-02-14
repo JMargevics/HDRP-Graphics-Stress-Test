@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEditorInternal;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,6 +11,7 @@ using UnityEditor;
 
 public class ShowSystemInfo : MonoBehaviour
 {
+    [Header("Text Objects")]
     public Text tm;
     public Text tm_hdr;
     public Text tm_msaa;
@@ -18,6 +20,15 @@ public class ShowSystemInfo : MonoBehaviour
     public Text tm_tier;
     public GameObject[] showHideObjects;
     public GameObject dontDestroyGO;
+
+    [Header("FPS Counter")]
+    public Text tm_fps;
+    private double alltime = 0;
+    private double dt = 0;
+    private double avgt = 0;
+    private int count = 1;
+    public int skipcount = 1000;
+    public int samplecount = 1000;
 
     [SerializeField]
     [HideInInspector]
@@ -28,6 +39,8 @@ public class ShowSystemInfo : MonoBehaviour
 
     void Start()
     {
+        Application.targetFrameRate = 999;
+
         if (Application.isPlaying)
         {
             DontDestroyOnLoad(dontDestroyGO);
@@ -36,6 +49,7 @@ public class ShowSystemInfo : MonoBehaviour
         if (Application.isPlaying && SceneManager.sceneCountInBuildSettings > 1)
         {
             SceneManager.LoadScene(1);
+            count = 1;
         }
 
         updateText();
@@ -50,7 +64,9 @@ public class ShowSystemInfo : MonoBehaviour
 
         tm.text = "";
 
-        tm.text = tm.text + TitleText("Unity : ") + Application.unityVersion + "\n";
+        //tm.text = tm.text + TitleText("Unity : ") + Application.unityVersion + "\n";
+        tm.text = tm.text + TitleText("Unity : ") + InternalEditorUtility.GetFullUnityVersion() + "\n";
+        tm.text = tm.text + TitleText("Branch : ") + InternalEditorUtility.GetUnityBuildBranch() + "\n";
         tm.text = tm.text + TitleText("Device : ") + SystemInfo.deviceModel + "\n";
         tm.text = tm.text + TitleText("OS : ") + SystemInfo.operatingSystem + "\n";
         tm.text = tm.text + TitleText("CPU : ") + SystemInfo.processorType + "\n";
@@ -68,10 +84,10 @@ public class ShowSystemInfo : MonoBehaviour
         if (Camera.main != null)
         {
             tm.text = tm.text + TitleText("Camera Rendering Path : ") + Camera.main.renderingPath.ToString() + "\n";
-#if UNITY_5_6_OR_NEWER
-            if (Camera.main.allowHDR) tm_hdr.text = "HDR On"; else tm_hdr.text = "HDR Off";
-            if (Camera.main.allowMSAA) tm_msaa.text = "MSAA On"; else tm_msaa.text = "MSAA Off";
-#endif
+            #if UNITY_5_6_OR_NEWER
+                if (Camera.main.allowHDR) tm_hdr.text = "HDR On"; else tm_hdr.text = "HDR Off";
+                if (Camera.main.allowMSAA) tm_msaa.text = "MSAA On"; else tm_msaa.text = "MSAA Off";
+            #endif
             tm_renderpath.text = Camera.main.renderingPath.ToString();
         }
         else
@@ -86,9 +102,9 @@ public class ShowSystemInfo : MonoBehaviour
         tm.text = tm.text + H2Text("GPU Instancing : ") + BooleanText(SystemInfo.supportsInstancing) + "\n";
         tm.text = tm.text + H2Text("2D Array Texture : ") + BooleanText(SystemInfo.supports2DArrayTextures) + "\n";
         tm.text = tm.text + H2Text("3D Texture : ") + BooleanText(SystemInfo.supports3DTextures) + "\n";
-#if UNITY_5_6_OR_NEWER
-        tm.text = tm.text + H2Text("3D Render Texture : ") + BooleanText(SystemInfo.supports3DRenderTextures) + "\n";
-#endif
+        #if UNITY_5_6_OR_NEWER
+                tm.text = tm.text + H2Text("3D Render Texture : ") + BooleanText(SystemInfo.supports3DRenderTextures) + "\n";
+        #endif
         tm.text = tm.text + H2Text("Cubemap Array Texture : ") + BooleanText(SystemInfo.supportsCubemapArrayTextures) + "\n";
         //tm.text = tm.text + H2Text("Image Effect : ") + BooleanText(SystemInfo.) + "\n";
         // tm.text = tm.text + H2Text("Motion Vector : ") + BooleanText(SystemInfo.supportsMotionVectors) + "\n";
@@ -122,17 +138,45 @@ public class ShowSystemInfo : MonoBehaviour
 
     void Update()
     {
-#if UNITY_EDITOR
-        if (!Application.isPlaying) updateText();
-#endif
+        #if UNITY_EDITOR
+            if (!Application.isPlaying) updateText();
+        #endif
 
         if (Application.isPlaying && Input.touchCount > 0 && Input.GetTouch(0).tapCount == 2 && Input.GetTouch(0).phase == TouchPhase.Ended || Input.GetKeyDown(KeyCode.Space))
         {
             NextScene();
             updateText();
         }
+
+        AverageFPSCounter();
     }
 
+    private void AverageFPSCounter()
+    {
+        if(count > skipcount)
+        {
+            if(count == skipcount + samplecount)
+            {
+                avgt = alltime/((count-skipcount)*1.000000000f);
+                tm_fps.text = GreenText("average FPS in " + samplecount + " frames = "+System.String.Format("{0:F2} FPS",avgt));
+            }
+            else if(count < skipcount + samplecount)
+            {
+                alltime += Time.timeScale/Time.deltaTime;
+                tm_fps.text = WarningText("now sampling " + samplecount + " frames..."+count);
+            }
+        }
+        else
+        {
+            alltime = 0;
+            tm_fps.text = ErrorText("skipping first "+ skipcount +" frames..."+count);
+        }
+
+        count++;
+
+
+        
+    }
 
     //========Text Styles========
     private string TitleText(string text)
@@ -143,6 +187,16 @@ public class ShowSystemInfo : MonoBehaviour
     private string WarningText(string text)
     {
         return "<color=#ffff00>" + text + "</color>";
+    }
+
+    private string ErrorText(string text)
+    {
+        return "<color=#ff0099>" + text + "</color>";
+    }
+
+    private string GreenText(string text)
+    {
+        return "<color=#00ff00>" + text + "</color>";
     }
 
     private string H2Text(string text)
@@ -170,6 +224,8 @@ public class ShowSystemInfo : MonoBehaviour
             SceneManager.LoadScene(sceneIndex + 1);
         else
             SceneManager.LoadScene(1);
+
+        count = 1;
     }
 
     public void PrevScene()
@@ -180,6 +236,8 @@ public class ShowSystemInfo : MonoBehaviour
             SceneManager.LoadScene(sceneIndex - 1);
         else
             SceneManager.LoadScene(SceneManager.sceneCountInBuildSettings - 1);
+
+        count = 1;
     }
 
     public void ToggleShowInfo()
