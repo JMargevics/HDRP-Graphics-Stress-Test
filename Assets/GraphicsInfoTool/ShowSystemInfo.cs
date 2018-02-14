@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEditorInternal;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditorInternal;
 #endif
 
 [ExecuteInEditMode]
@@ -64,9 +65,13 @@ public class ShowSystemInfo : MonoBehaviour
 
         tm.text = "";
 
-        //tm.text = tm.text + TitleText("Unity : ") + Application.unityVersion + "\n";
+        #if UNITY_EDITOR
         tm.text = tm.text + TitleText("Unity : ") + InternalEditorUtility.GetFullUnityVersion() + "\n";
         tm.text = tm.text + TitleText("Branch : ") + InternalEditorUtility.GetUnityBuildBranch() + "\n";
+        #else
+        tm.text = tm.text + TitleText("Unity : ") + Application.unityVersion + "\n";
+        #endif
+        
         tm.text = tm.text + TitleText("Device : ") + SystemInfo.deviceModel + "\n";
         tm.text = tm.text + TitleText("OS : ") + SystemInfo.operatingSystem + "\n";
         tm.text = tm.text + TitleText("CPU : ") + SystemInfo.processorType + "\n";
