@@ -30,6 +30,7 @@ public class ShowSystemInfo : MonoBehaviour
     private int count = 1;
     public int skipcount = 1000;
     public int samplecount = 1000;
+    private string result="";
 
     [SerializeField]
     [HideInInspector]
@@ -65,13 +66,13 @@ public class ShowSystemInfo : MonoBehaviour
 
         tm.text = "";
 
+        
         #if UNITY_EDITOR
         tm.text = tm.text + TitleText("Unity : ") + InternalEditorUtility.GetFullUnityVersion() + "\n";
         tm.text = tm.text + TitleText("Branch : ") + InternalEditorUtility.GetUnityBuildBranch() + "\n";
         #else
         tm.text = tm.text + TitleText("Unity : ") + Application.unityVersion + "\n";
         #endif
-        
         tm.text = tm.text + TitleText("Device : ") + SystemInfo.deviceModel + "\n";
         tm.text = tm.text + TitleText("OS : ") + SystemInfo.operatingSystem + "\n";
         tm.text = tm.text + TitleText("CPU : ") + SystemInfo.processorType + "\n";
@@ -158,29 +159,59 @@ public class ShowSystemInfo : MonoBehaviour
 
     private void AverageFPSCounter()
     {
+            tm_fps.text = "";
+
         if(count > skipcount)
         {
-            if(count == skipcount + samplecount)
+            
+            if(count == skipcount + samplecount) //Show result
             {
                 avgt = alltime/((count-skipcount)*1.000000000f);
-                tm_fps.text = GreenText("average FPS in " + samplecount + " frames = "+System.String.Format("{0:F2} FPS",avgt));
+
+                result = GreenText("average FPS in " + samplecount + " frames = "+System.String.Format("{0:F2} FPS",avgt));
+
+                tm_fps.text = result;
+                tm_fps.text += "\n";
+
             }
-            else if(count < skipcount + samplecount)
+            else if(count < skipcount + samplecount) //Do sampling
             {
                 alltime += Time.timeScale/Time.deltaTime;
                 tm_fps.text = WarningText("now sampling " + samplecount + " frames..."+count);
+                tm_fps.text += "\n";
+            }
+            else
+            {
+                tm_fps.text = result;
+                tm_fps.text += "\n";
             }
         }
         else
         {
             alltime = 0;
             tm_fps.text = ErrorText("skipping first "+ skipcount +" frames..."+count);
+            tm_fps.text += "\n";
         }
 
         count++;
 
+                //Memory
+                long num = UnityEngine.Profiling.Profiler.GetAllocatedMemoryForGraphicsDriver() / 1024 / 1024;
+                tm_fps.text += TitleText("AllocatedMemoryForGraphicsDriver = ")+num.ToString() + " mb";
+                tm_fps.text += "\n";
+                num = UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong() / 1024 / 1024;
+                tm_fps.text += TitleText("TotalAllocatedMemory = ")+num.ToString() + " mb";
+                tm_fps.text += "\n";
+                num = UnityEngine.Profiling.Profiler.GetTempAllocatorSize() / 1024 / 1024;
+                tm_fps.text += TitleText("TempAllocatorSize = ")+num.ToString() + " mb";
+                tm_fps.text += "\n";
+                num = UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong() / 1024 / 1024;
+                tm_fps.text += TitleText("TotalReservedMemoryg = ")+num.ToString() + " mb";
+                tm_fps.text += "\n";
+                num = UnityEngine.Profiling.Profiler.GetTotalUnusedReservedMemoryLong() / 1024 / 1024;
+                tm_fps.text += TitleText("TotalUnusedReservedMemory = ")+num.ToString() + " mb";
+                tm_fps.text += "\n";
 
-        
     }
 
     //========Text Styles========
