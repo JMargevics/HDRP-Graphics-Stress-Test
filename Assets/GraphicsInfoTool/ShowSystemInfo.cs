@@ -42,6 +42,7 @@ public class ShowSystemInfo : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 999;
+        Screen.SetResolution(1920, 1080, true);
 
         if (Application.isPlaying)
         {
