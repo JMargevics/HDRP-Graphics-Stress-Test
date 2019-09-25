@@ -6,13 +6,9 @@ It starts sampling frames after frame 1000. Wait till frame 2000 to get the aver
 
 Legend:
 
-AllocatedMemoryForGraphicsDriver
-
-TotalAllocatedMemory
-
-TempAllocatorSize
-
-TotalReservedMemoryg
-
-TotalUnusedReservedMemory
+AllocatedMemoryForGraphicsDriver/n
+TotalAllocatedMemory/n
+TempAllocatorSize/n
+TotalReservedMemoryg/n
+TotalUnusedReservedMemory/n
 
