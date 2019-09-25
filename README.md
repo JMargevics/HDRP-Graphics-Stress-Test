@@ -1,4 +1,5 @@
 # HDRP Graphics Stress Test
+![HDRP Stress test](https://i.imgur.com/JLpMwqL.png)  
 ## How to use  
 Open Base scene and click play.  
 Scene switching - **Space Bar** or click on **Prev/Next**.  
