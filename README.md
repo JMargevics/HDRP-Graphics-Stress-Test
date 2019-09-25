@@ -8,5 +8,15 @@ Legend:
 - TotalAllocatedMemory: ??
 - TempAllocatorSize: ??
 - TotalReservedMemoryg: ??
-- TotalUnusedReservedMemory: ??
+- TotalUnusedReservedMemory: ??  
+
+Scenes:
+- CPUParticles
+- CPUPhysics
+- GPUParticles
+- Lights
+- Particles_Collision
+- Rendering_OpaqueLit
+- Rendering_TransparentLit
+
 
