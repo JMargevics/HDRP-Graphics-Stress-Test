@@ -1,18 +1,15 @@
 # HDRP Graphics Stress Test
-
-How to use:  
+##How to use:  
 Open Base scene and click play.  
 Scene switching - **Space Bar** or click on **Prev/Next**.  
 It starts sampling frames after frame **1000**, wait till frame **2000** to get the average FPS.  
-
-Legend:
+##Legend:
 - AllocatedMemoryForGraphicsDriver: ??
 - TotalAllocatedMemory: ??
 - TempAllocatorSize: ??
 - TotalReservedMemoryg: ??
 - TotalUnusedReservedMemory: ??  
-
-Scenes:
+##Scenes:
 - CPUParticles
 - CPUPhysics
 - GPUParticles
