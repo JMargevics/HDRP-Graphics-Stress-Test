@@ -3,7 +3,7 @@
 Scene switching - **Space Bar** or click on **Prev/Next**.  
 It starts sampling frames after frame **1000**, wait till frame **2000** to get the average FPS.  
 
-Legend:  
+Legend:
 - AllocatedMemoryForGraphicsDriver: ??
 - TotalAllocatedMemory: ??
 - TempAllocatorSize: ??
