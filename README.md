@@ -10,7 +10,7 @@
 - TotalAllocatedMemory: The total memory allocated by the internal allocators in Unity. Unity reserves large pools of memory from the system  
 - TempAllocatorSize: The size of the temp allocator  
 - TotalReservedMemoryg: The total memory Unity has reserved  
-- TotalUnusedReservedMemory: The amount of unused memory in pools where Unity allocates memory for usage when unity needs to allocate memory  
+- TotalUnusedReservedMemory: The amount of unused memory in pools where Unity allocates memory for usage when it needs to allocate memory  
 ## Scenes
 - CPUParticles
 - CPUPhysics
